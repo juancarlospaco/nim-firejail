@@ -1,4 +1,4 @@
-import os, osproc, strformat, strutils, times, colors, tables, json
+import os, osproc, strutils, json
 
 const
   v = staticExec("firejail  --version").strip
