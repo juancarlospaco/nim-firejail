@@ -13,6 +13,8 @@ type
   Firejail* = object  ## Firejail Security Sandbox.
     allusers*, apparmor*, caps*, ipcNamespace*, keepDevShm*, keepVarTmp*: bool
     machineId*, memoryDenyWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
+    noNewPrivs*, noProfile*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
+    nou2f*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -58,13 +60,6 @@ echo Firejail().tree()
     # --net=none - enable a new, unconnected network namespace.
     # --nice=value - set nice value.
     # --noblacklist=filename - disable blacklist for file or directory.
-    # --nonewprivs - sets the NO_NEW_PRIVS prctl.
-    # --noprofile - do not use a security profile.
-    # --noroot - install a user namespace with only the current user.
-    # --nosound - disable sound system.
-    # --noautopulse - disable automatic ~/.config/pulse init.
-    # --novideo - disable video devices.
-    # --nou2f - disable U2F devices.
     # --nowhitelist=filename - disable whitelist for file or directory .
     # --output=logfile - stdout logging and log rotation.
     # --output-stderr=logfile - stdout and stderr logging and log rotation.
