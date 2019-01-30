@@ -15,8 +15,8 @@ let firejailFeatures* = featureparser(v)
 type
   Firejail* = object  ## Firejail Security Sandbox.
 
-proc list*(this: Firejail): seq[JsonNode] {.inline.} =
-  ## Return the list of Firejails sandboxes running.
+proc list*(this: Firejail): seq[JsonNode] =
+  ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
   let (output, exitCode) = execCmdEx("firejail --list")
   if exitCode == 0:
     for line in output.strip.splitLines:
@@ -29,7 +29,7 @@ proc list*(this: Firejail): seq[JsonNode] {.inline.} =
       }
 
 proc tree*(this: Firejail): string {.inline.} =
-  ## Return the list of Firejails sandboxes running (Human friendly string)
+  ## Return the list of Firejails sandboxes running (Human friendly string).
   let (output, exitCode) = execCmdEx("firejail --tree")
   if exitCode == 0: result = output.strip
 
