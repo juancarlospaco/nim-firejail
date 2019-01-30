@@ -18,12 +18,7 @@ proc list*(this: Firejail): seq[JsonNode] =
   if exitCode == 0:
     for line in output.strip.splitLines:
       var l = line.split(":")
-      result.add %*{
-        "pid":     l[0],
-        "user":    l[1],
-        "name":    l[2],
-        "command": l[3],
-      }
+      result.add %*{"pid": l[0], "user": l[1], "name": l[2], "command": l[3]}
 
 proc tree*(this: Firejail): string {.inline.} =
   ## Return the list of Firejails sandboxes running (Human friendly string).
