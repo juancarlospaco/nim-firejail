@@ -7,7 +7,7 @@ const
     ("disabled", "false,"), ("enabled", "true,"),
     (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
 
-let firejailFeatures* = parseJson(fea)
+let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
