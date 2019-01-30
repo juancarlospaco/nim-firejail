@@ -31,7 +31,7 @@ proc tree*(this: Firejail): string {.inline.} =
   if exitCode == 0: result = output.strip
 
 proc exec*(this: Firejail): string =
-  ## Run a process on a Firejails sandbox.
+  ## Run a process on a Firejails sandbox, using the provided config.
   let (output, exitCode) = execCmdEx("firejail --tree")
   if exitCode == 0: result = output.strip
 
