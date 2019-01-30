@@ -32,6 +32,7 @@ proc tree*(this: Firejail): string {.inline.} =
 
 proc shutdown*(this: Firejail, pid: int): auto {.inline.} =
   ## Shutdown a running Firejail sandbox by PID.
+  when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid)
 
 proc exec*(this: Firejail): string =
