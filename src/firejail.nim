@@ -1,3 +1,6 @@
+# https://www.digitalocean.com/community/tutorials/how-to-use-firejail-to-set-up-a-wordpress-installation-in-a-jailed-environment
+# https://l3net.wordpress.com/2014/06/08/securing-a-web-server-using-a-linux-namespaces-sandbox/
+# https://hans-hermann-bode.de/en/content/web-server-sandbox
 import os, osproc, strutils, json
 
 const
