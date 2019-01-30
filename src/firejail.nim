@@ -12,10 +12,10 @@ let firejailFeatures* = parseJson(fea)
 type
   Firejail* = object  ## Firejail Security Sandbox.
     allusers*, apparmor*, caps*, ipcNamespace*, keepDevShm*, keepVarTmp*: bool
-    machineId*, memoryDenyWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
+    machineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
     noNewPrivs*, noProfile*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
-    nou2f*, overlayClean*, privateTmp*, private*, privateCache*, quiet*: bool
-    privateDev*, seccomp*, noShell*, nox11*: bool
+    nou2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
+    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -50,7 +50,6 @@ echo Firejail().tree()
     # --hostname=name - set sandbox hostname.
     # --hosts-file=file - use file as /etc/hosts.
     # --ip=address - set interface IP address.
-    # --ip=none - no IP address and no default gateway are configured.
     # --ip6=address - set interface IPv6 address.
     # --mac=xx:xx:xx:xx:xx:xx - set interface MAC address.
     # --mtu=number - set interface MTU.
@@ -58,7 +57,6 @@ echo Firejail().tree()
     # --net=bridgename - enable network namespaces and connect to this bridge.
     # --net=ethernet_interface - enable network namespaces and connect to this
     #     Ethernet interface.
-    # --net=none - enable a new, unconnected network namespace.
     # --nice=value - set nice value.
     # --output=logfile - stdout logging and log rotation.
     # --output-stderr=logfile - stdout and stderr logging and log rotation.
