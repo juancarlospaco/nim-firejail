@@ -30,6 +30,10 @@ proc tree*(this: Firejail): string {.inline.} =
   let (output, exitCode) = execCmdEx("firejail --tree")
   if exitCode == 0: result = output.strip
 
+proc shutdown*(this: Firejail, pid: int): auto {.inline.} =
+  ## Shutdown a running Firejail sandbox by PID.
+  execCmdEx("firejail --shutdown=" & $pid)
+
 proc exec*(this: Firejail): string =
   ## Run a process on a Firejails sandbox, using the provided config.
   let (output, exitCode) = execCmdEx("firejail --tree")
