@@ -11,6 +11,8 @@ let firejailFeatures* = parseJson(fea)
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
+    allusers*, apparmor*, caps*, ipcNamespace*, keepDevShm*, keepVarTmp*: bool
+    machineId*, memoryDenyWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -35,15 +37,10 @@ echo Firejail().list()
 echo Firejail().tree()
 
 
-
-    # --allusers - all user home directories are visible inside the sandbox.
-    # --apparmor - enable AppArmor confinement.
     # --bandwidth=name|pid - set bandwidth limits.
     # --blacklist=filename - blacklist directory or file.
-    # --caps - enable default Linux capabilities filter.
     # --chroot=dirname - chroot into directory.
     # --cpu=cpu-number,cpu-number - set cpu affinity.
-    # --debug - print sandbox debug messages.
     # --defaultgw=address - configure default gateway.
     # --dns=address - set DNS server.
     # --env=name=value - set environment variable.
@@ -52,13 +49,7 @@ echo Firejail().tree()
     # --ip=address - set interface IP address.
     # --ip=none - no IP address and no default gateway are configured.
     # --ip6=address - set interface IPv6 address.
-    # --ipc-namespace - enable a new IPC namespace.
-    # --keep-dev-shm - /dev/shm directory is untouched (even with --private-dev).
-    # --keep-var-tmp - /var/tmp directory is untouched.
     # --mac=xx:xx:xx:xx:xx:xx - set interface MAC address.
-    # --machine-id - preserve /etc/machine-id
-    # --memory-deny-write-execute - seccomp filter to block attempts to create
-    #     memory mappings  that are both writable and executable.
     # --mtu=number - set interface MTU.
     # --name=name - set sandbox name.
     # --net=bridgename - enable network namespaces and connect to this bridge.
@@ -66,11 +57,7 @@ echo Firejail().tree()
     #     Ethernet interface.
     # --net=none - enable a new, unconnected network namespace.
     # --nice=value - set nice value.
-    # --no3d - disable 3D hardware acceleration.
     # --noblacklist=filename - disable blacklist for file or directory.
-    # --nodbus - disable D-Bus access.
-    # --nodvd - disable DVD and audio CD devices.
-    # --nogroups - disable supplementary groups.
     # --nonewprivs - sets the NO_NEW_PRIVS prctl.
     # --noprofile - do not use a security profile.
     # --noroot - install a user namespace with only the current user.
