@@ -11,10 +11,10 @@ let firejailFeatures* = parseJson(fea)
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
-    allusers*, apparmor*, caps*, ipcNamespace*, keepDevShm*, keepVarTmp*: bool
-    machineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
-    noNewPrivs*, noProfile*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
-    nou2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
+    noAllusers*, apparmor*, noCaps*, keepDevShm*, keepVarTmp*: bool
+    noMachineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
+    noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
+    noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
     privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
