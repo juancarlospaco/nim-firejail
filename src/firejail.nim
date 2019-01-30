@@ -3,14 +3,11 @@ import os, osproc, strformat, strutils, times, colors, tables, json
 const
   v = staticExec("firejail  --version").strip
   firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
+  fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
+    ("disabled", "false,"), ("enabled", "true,"),
+    (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
 
-proc featureparser(stringy: string): JsonNode {.inline.} =
-  result = parseJson("{" &
-    stringy.normalize.split("compile time support:")[1].multiReplace(
-      ("disabled", "false,"), ("enabled", "true,"),
-      (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}")
-
-let firejailFeatures* = featureparser(v)
+let firejailFeatures* = parseJson(fea)
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
@@ -43,7 +40,7 @@ echo Firejail().list()
 echo Firejail().tree()
 
 
-    #
+
     # --allusers - all user home directories are visible inside the sandbox.
     # --apparmor - enable AppArmor confinement.
     # --bandwidth=name|pid - set bandwidth limits.
