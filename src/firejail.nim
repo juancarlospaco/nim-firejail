@@ -14,7 +14,8 @@ type
     allusers*, apparmor*, caps*, ipcNamespace*, keepDevShm*, keepVarTmp*: bool
     machineId*, memoryDenyWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
     noNewPrivs*, noProfile*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
-    nou2f*: bool
+    nou2f*, overlayClean*, privateTmp*, private*, privateCache*, quiet*: bool
+    privateDev*, seccomp*, noShell*, nox11*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -59,19 +60,8 @@ echo Firejail().tree()
     #     Ethernet interface.
     # --net=none - enable a new, unconnected network namespace.
     # --nice=value - set nice value.
-    # --noblacklist=filename - disable blacklist for file or directory.
-    # --nowhitelist=filename - disable whitelist for file or directory .
     # --output=logfile - stdout logging and log rotation.
     # --output-stderr=logfile - stdout and stderr logging and log rotation.
-    # --overlay - mount a filesystem overlay on top of the current filesystem.
-    # --overlay-tmpfs - mount a temporary filesystem overlay on top of the
-    #     current filesystem.
-    # --overlay-clean - clean all overlays stored in $HOME/.firejail directory.
-    # --private - temporary home directory.
-    # --private-cache - temporary ~/.cache directory.
-    # --private-dev - create a new /dev directory with a small number of common device files.
-    # --private-tmp - mount a tmpfs on top of /tmp directory.
-    # --quiet - turn off Firejail's output.
     # --rlimit-as=number - set the maximum size of the process's virtual memory
     #     (address space) in bytes.
     # --rlimit-cpu=number - set the maximum CPU time in seconds.
@@ -79,22 +69,7 @@ echo Firejail().tree()
     # --rlimit-nofile=number - set the maximum number of files that can be opened by a process.
     # --rlimit-nproc=number - set the maximum number of processes that can be created for the real user ID of the calling process.
     # --rlimit-sigpending=number - set the maximum number of pending signals for a process.
-    # --seccomp - enable seccomp filter and apply the default blacklist.
-    # --shell=none - run the program directly without a user shell.
-    # --shell=program - set default user shell.
     # --shutdown=name|pid - shutdown the sandbox identified by name or PID.
     # --timeout=hh:mm:ss - kill the sandbox automatically after the time has elapsed.
     # --tmpfs=dirname - mount a tmpfs filesystem on directory dirname.
     # --whitelist=filename - whitelist directory or file.
-    # --writable-etc - /etc directory is mounted read-write.
-    # --writable-run-user - allow access to /run/user/$UID/systemd and /run/user/$UID/gnupg.
-    # --writable-var - /var directory is mounted read-write.
-    # --writable-var-log - use the real /var/log directory, not a clone.
-    # --x11 - enable X11 sandboxing. The software checks first if Xpra is
-    #     installed, then it checks if Xephyr is installed. If all fails, it will
-    #     attempt to use X11 security extension.
-    # --x11=none - disable access to X11 sockets.
-    # --x11=xephyr - enable Xephyr X11 server. The window size is 800x600.
-    # --x11=xorg - enable X11 security extension.
-    # --x11=xpra - enable Xpra X11 server.
-    # --x11=xvfb - enable Xvfb X11 server.
