@@ -4,7 +4,7 @@
 import os, osproc, strutils, json
 
 const
-  v = staticExec("firejail  --version").strip
+  v = staticExec("firejail  --version").strip # Get version info from Firejails.
   firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
   fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
     ("disabled", "false,"), ("enabled", "true,"),
