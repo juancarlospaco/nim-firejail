@@ -2,6 +2,7 @@
 import os, osproc, strutils, json, random
 
 const
+  h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
   firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
   fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
@@ -12,7 +13,6 @@ const
    "MESSAGES='$1'", "PAPER='$1'", "NAME='$1'", "ADDRESS='$1'", "TELEPHONE='$1'",
    "MEASUREMENT='$1'", "IDENTIFICATION='$1'", "ALL='$1'",
   ].join(" --env=LC_").format("en_US.UTF-8") & " --env=LANG='en_US.UTF-8'"
-  h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
 
 let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
@@ -128,8 +128,6 @@ when isMainModule:
     # --hosts-file=file - use file as /etc/hosts.
     # --ip=address - set interface IP address.
     # --ip6=address - set interface IPv6 address.
-    # --mac=xx:xx:xx:xx:xx:xx - set interface MAC address.
-    # --mtu=number - set interface MTU.
     # --name=name - set sandbox name.
     # --net=bridgename - enable network namespaces and connect to this bridge.
     # --net=ethernet_interface - enable network namespaces and connect to this
