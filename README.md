@@ -44,6 +44,7 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 # For more info read the Docs...
 ```
 
-- API is a 1-1 copy of the CLI Firejails API, so Firejails Docs work too.
+- API is a 1-1 copy of the CLI Firejails API, so any Firejails Docs work too.
 - Run `nim doc firejails.nim` for more Documentation.
+- Run `nim genDepend firejail.nim` for Graphics of internal code structure.
 - Run `nim c -r firejails.nim` for an Example.
