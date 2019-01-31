@@ -30,7 +30,7 @@ echo myjail.list() # List all Firejails sandboxes running, return seq[JsonNode] 
 
 echo myjail.tree() # List all Firejails sandboxes running, return string (human friendly)
 
-echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool
+echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool, true if Ok
 
 # For more read the Docs...
 ```
