@@ -135,7 +135,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
 
     denese, blancas, negras, command.quoteShell
   ].join(" ")
-  #when not defined(release): echo cmd
+  when not defined(release): echo cmd
   # execCmdEx(cmd)
   cmd
 
@@ -163,7 +163,7 @@ when isMainModule:
   echo myjail.tree()
   # echo myjail.exec("myApp") # Works with no options too, sane defaults.
   echo myjail.exec(      # ALL options used here, dont worry they are optional!
-    command="myApp", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
+    command="echo 42", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
     hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
     tmpfs="/tmp/tmpfs", dnsServers=["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.1.1.2"],
     whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"],
