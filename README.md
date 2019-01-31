@@ -107,3 +107,4 @@ Devices send a signal to look for networks,
 the signal contains the unique physical hardware (MAC) address for your device,
 this unique address can be used to track you on a network and "map" a network,
 you can use a random MAC address to make it harder to track. This is optional.
+This is just an extra feature so you dont have to do it manually if you need to.
