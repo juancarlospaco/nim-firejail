@@ -49,7 +49,7 @@ runnableExamples:
 
 
 when isMainModule:
-  echo Firejail().list()
+  echo $Firejail().list()
   echo Firejail().tree()
 
     # --bandwidth=name|pid - set bandwidth limits.
