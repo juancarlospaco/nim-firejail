@@ -81,7 +81,7 @@ proc exec*(this: Firejail, command: string): auto =
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
     command,
   ].join(" ")
-  #when not defined(release): echo cmd
+  when not defined(release): echo cmd
   # execCmdEx(cmd)
   cmd
 
