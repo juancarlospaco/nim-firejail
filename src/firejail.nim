@@ -55,13 +55,9 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            whitelist: seq[string]= @[], blacklist: seq[string]= @[],
            dnsServers: array[4, string] = ["", "", "", ""]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
-  when defined(release): # Defensive programming when not build for release.
+  when not defined(release):
     if hostsFile != "":
       assert hostsFile.existsFile, "hostsFile not found, hostsFile must be readable"
-    if chroot != "":
-      assert chroot.existsDir, "chroot folder not found, chroot must be writable"
-    if tmpfs != "":
-      assert tmpfs.existsDir, "tmpfs folder not found, tmpfs must be writable"
 
   let
     nam = name.normalize.quoteShell
