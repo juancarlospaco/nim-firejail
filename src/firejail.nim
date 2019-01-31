@@ -45,8 +45,7 @@ proc exec*(this: Firejail): auto =
     if this.caps:         "--caps" else: "",
     if this.noKeepDevShm: "" else: "--keep-dev-shm",
     if this.noKeepVarTmp: "" else: "--keep-var-tmp",
-    if this.noMachineId:  "--machine-id" else: "",
-    if this.noRamWriteExecute: "--memory-deny-write-execute" else: "",
+    if this.noMachineId:  "" else: "--machine-id",
     if this.no3d:         "--no3d" else: "",
     if this.noDbus:       "--nodbus" else: "",
     if this.noDvd:        "--nodvd" else: "",
@@ -67,6 +66,7 @@ proc exec*(this: Firejail): auto =
     if this.noX:          "--x11=none" else: "--x11",
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
+    if this.noRamWriteExecute: "--memory-deny-write-execute" else: "",
   ].join(" ")
   #when not defined(release): echo cmd
   # execCmdEx(cmd)
