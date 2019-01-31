@@ -50,11 +50,12 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
+proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            gateway="", hostsFile="", logfile="", chroot="", tmpfs="",
-           whitelist: seq[string]= @[], blacklist: seq[string]= @[]): auto =
+           whitelist: seq[string]= @[], blacklist: seq[string]= @[],
+           dnsServers: array[4, string] = ["", "", "", ""]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
-  when not defined(release): # Defensive programming when not build for release.
+  when defined(release): # Defensive programming when not build for release.
     if hostsFile != "":
       assert hostsFile.existsFile, "hostsFile not found, hostsFile must be readable"
     if chroot != "":
@@ -75,6 +76,11 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
   if blacklist != @[]:
     for folder in blacklist:
       negras.add " --blacklist=" & folder.quoteShell
+
+  var denese: string
+  if dnsServers != ["", "", "", ""]:
+    for servo in dnsServers:
+      denese.add " --dns=" & servo.quoteShell
 
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
@@ -115,14 +121,13 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
 
     if timeout != 0:      "--timeout=" & quoteShell($timeout & ":00:00") else: "",
     if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
-    if dns != "":         "--dns=" & dns.quoteShell else: "",
     if gateway != "":     "--defaultgw=" & gateway.quoteShell else: "",
     if hostsFile != "":   "--hosts-file=" & hostsFile.quoteShell else: "",
-    if logfile != "":     "--output=" & lgs & "--output-stderr=" & lgs else: "",
+    if logfile != "":     "--output=" & lgs & " --output-stderr=" & lgs else: "",
     if chroot != "":      "--chroot=" & chroot.quoteShell else: "",
     if tmpfs != "":       "--tmpfs=" & tmpfs.quoteShell else: "",
 
-    blancas, negras, command,
+    denese, blancas, negras, command,
   ].join(" ")
   when not defined(release): echo cmd
   # execCmdEx(cmd)
@@ -150,7 +155,13 @@ when isMainModule:
   )
   # echo $myjail.list()
   # echo myjail.tree()
-  echo myjail.exec("myApp")
+  echo myjail.exec(
+    command="myApp", timeout=255.byte, name="myApp",
+    gateway="10.0.0.1", hostsFile="/etc/hosts", logfile="/tmp/myApp.log",
+    chroot="/tmp/chroot", tmpfs="/tmp/chroot",
+    dnsServers=["8.8.8.8", "8.8.4.4", "10.0.0.1", "10.0.0.2"],
+    whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"]
+  )
 
     # --bandwidth=name|pid - set bandwidth limits.
     # --cpu=cpu-number,cpu-number - set cpu affinity.
