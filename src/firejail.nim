@@ -38,9 +38,38 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 
 proc exec*(this: Firejail): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
-  let cmd = @[]
+  let cmd = [
+    "firejail",
+    if this.noAllusers: "" else: "",
+    if this.apparmor: "" else: "",
+    if this.noCaps: "" else: "",
+    if this.keepDevShm: "" else: "",
+    if this.keepVarTmp: "" else: "",
+    if this.noMachineId: "" else: "",
+    if this.noRamWriteExecute: "" else: "",
+    if this.no3d: "" else: "",
+    if this.noDbus: "" else: "",
+    if this.noDvd: "" else: "",
+    if this.noGroups: "" else: "",
+    if this.noNewPrivs: "" else: "",
+    if this.noRoot: "" else: "",
+    if this.noSound: "" else: "",
+    if this.noAutoPulse: "" else: "",
+    if this.noVideo: "" else: "",
+    if this.noU2f: "" else: "",
+    if this.overlayClean: "" else: "",
+    if this.privateTmp: "" else: "",
+    if this.private: "" else: "",
+    if this.privateCache: "" else: "",
+    if this.privateDev: "" else: "",
+    if this.seccomp: "" else: "",
+    if this.noShell: "" else: "",
+    if this.noX: "" else: "",
+    if this.noNet: "" else: "",
+    if this.noIp: "" else: "",
+  ].join(" ")
   when not defined(release): echo cmd
-  execCmdEx(cmd)
+  # execCmdEx(cmd)
 
 
 runnableExamples:
