@@ -1,5 +1,5 @@
 ## .. image:: https://source.unsplash.com/-YGdiRcY9Sc/800x402
-import os, osproc, strutils, json
+import os, osproc, strutils, json, random
 
 const
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
@@ -12,6 +12,7 @@ const
    "MESSAGES='$1'", "PAPER='$1'", "NAME='$1'", "ADDRESS='$1'", "TELEPHONE='$1'",
    "MEASUREMENT='$1'", "IDENTIFICATION='$1'", "ALL='$1'",
   ].join(" --env=LC_").format("en_US.UTF-8") & " --env=LANG='en_US.UTF-8'"
+  h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
 
 let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
@@ -22,7 +23,13 @@ type
     noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8: bool
     noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
     privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*: bool
-    newIpcNamespace*, appimage*, useMtuJumbo9000*, useNice20*: bool
+    newIpcNamespace*, appimage*, useMtuJumbo9000*, useNice20*, useRandomMac*: bool
+
+proc randomMacAddress(): string =
+  ## Return 1 Random MAC Addres string.
+  randomize()
+  [h.rand & h.rand, h.rand & h.rand, h.rand & h.rand,
+   h.rand & h.rand, h.rand & h.rand, h.rand & h.rand].join(":")
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -77,6 +84,7 @@ proc exec*(this: Firejail, command: string): auto =
     if this.useNice20:    "--nice=20" else: "",
     if this.forceEnUsUtf8: enUsUtf8 else: "",
     if this.useMtuJumbo9000: "--mtu=9000" else: "",
+    if this.useRandomMac:    "--mac=" & randomMacAddress() else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
     command,
@@ -103,6 +111,7 @@ when isMainModule:
     privateCache: true, privateDev: true, seccomp: true, noShell: true,
     noNet: true, noIp: true, noDebuggers: false, newIpcNamespace: true,
     appimage: true, useMtuJumbo9000: true, useNice20: true, noX: true,
+    useRandomMac: true,
   )
   # echo $myjail.list()
   # echo myjail.tree()
