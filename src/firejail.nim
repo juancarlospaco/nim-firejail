@@ -54,10 +54,9 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
-           dnsServers: array[4, string] = ["", "", "", ""],
-           maxSubProcesses = 0, maxOpenFiles = 0, maxFileSize = 0,
-           maxPendingSignals = 0, maxRam = 0, maxCpu = 0,
-           cpuCoresByNumber: seq[int] = @[]): auto =
+           dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
+           maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
+           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   let
     nam = name.normalize.quoteShell
@@ -160,8 +159,8 @@ when isMainModule:
     appimage: true, useMtuJumbo9000: true, useNice20: true, noX: true,
     useRandomMac: true,
   )
-  # echo $myjail.list()
-  # echo myjail.tree()
+  echo $myjail.list()
+  echo myjail.tree()
   # echo myjail.exec("myApp") # Works with no options too, sane defaults.
   echo myjail.exec(      # ALL options used here, dont worry they are optional!
     command="myApp", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
