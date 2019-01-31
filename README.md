@@ -52,3 +52,10 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 - Run `nim c -r firejails.nim` for an Example.
 - This do Not run on JavaScript, `firejail` cant run on the browser.
 - Are you a Security Expert?, **Pull Requests welcome!**
+
+
+# FAQ
+
+- This works with Docker or Vagrant?.
+
+Yes.
