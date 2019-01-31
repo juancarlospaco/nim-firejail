@@ -1,6 +1,8 @@
 # Firejail
 
-- [Firejail](https://firejail.wordpress.com/features-3/#namespaces) wrapper for [Nim](https://nim-lang.org/learn.html). _Isolate your Production App before its too late!_
+- [Firejail](https://firejail.wordpress.com/features-3/#namespaces) wrapper for [Nim](https://nim-lang.org/learn.html).
+_Isolate your Production App before its too late!_
+🔥 🔐👑🔥
 
 ![screenshot](https://source.unsplash.com/-YGdiRcY9Sc/800x402 "FireJails")
 
@@ -31,9 +33,9 @@ import firejail
 let myjail = Firejail(no3d=true, noDbus=true, noDvd=true, noRoot=true, noSound=true,
                       noVideo=true, noShell=true, noX=true, noNet=true, noIp=true)
 
-echo myjail.list() # List all Firejails sandboxes running, return seq[JsonNode] (computer friendly)
+echo myjail.list() # List all Firejails sandboxes running, return a seq[JsonNode] (computer friendly)
 
-echo myjail.tree() # List all Firejails sandboxes running, return string (human friendly)
+echo myjail.tree() # List all Firejails sandboxes running, return a string (human friendly)
 
 echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool, true if Ok
 
