@@ -7,6 +7,11 @@ const
   fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
     ("disabled", "false,"), ("enabled", "true,"),
     (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
+  enUsUtf8 = "--env=LC_" & [
+   "CTYPE='$1'", "NUMERIC='$1'", "TIME='$1'", "COLLATE='$1'", "MONETARY='$1'",
+   "MESSAGES='$1'", "PAPER='$1'", "NAME='$1'", "ADDRESS='$1'", "TELEPHONE='$1'",
+   "MEASUREMENT='$1'", "IDENTIFICATION='$1'", "ALL='$1'",
+  ].join(" --env=LC_").format("en_US.UTF-8") & " --env=LANG='en_US.UTF-8'"
 
 let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
@@ -14,7 +19,7 @@ type
   Firejail* = object  ## Firejail Security Sandbox.
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noKeepVarTmp*: bool
     noMachineId*, noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*: bool
-    noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
+    noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8: bool
     noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
     privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*: bool
     newIpcNamespace*, appimage*, useMtuJumbo9000*, useNice20*: bool
@@ -70,6 +75,7 @@ proc exec*(this: Firejail): auto =
     if this.noDebuggers:  "" else: "--allow-debuggers",
     if this.appimage:     "--appimage" else: "",
     if this.useNice20:    "--nice=20" else: "",
+    if this.forceEnUsUtf8: enUsUtf8 else: "",
     if this.useMtuJumbo9000: "--mtu=9000" else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
