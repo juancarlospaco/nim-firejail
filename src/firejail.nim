@@ -70,17 +70,20 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
   var blancas: string
   if whitelist != @[]:
     for folder in whitelist:
-      blancas.add " --whitelist=" & folder.quoteShell
+      if folder.strip.len > 1:
+        blancas.add " --whitelist=" & folder.quoteShell
 
   var negras: string
   if blacklist != @[]:
     for folder in blacklist:
-      negras.add " --blacklist=" & folder.quoteShell
+      if folder.strip.len > 1:
+        negras.add " --blacklist=" & folder.quoteShell
 
   var denese: string
   if dnsServers != ["", "", "", ""]:
     for servo in dnsServers:
-      denese.add " --dns=" & servo.quoteShell
+      if servo.strip.len > 6: # 1.2.3.4
+        denese.add " --dns=" & servo.quoteShell
 
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
@@ -141,7 +144,7 @@ runnableExamples:
 
 
 when isMainModule:
-  # let myjail = Firejail()
+  # let myjail = Firejail()  # Works with no options too, sane defaults.
   let myjail = Firejail( # ALL options used here, dont worry they are optional!
     noAllusers: false, apparmor: true, caps: true, noKeepDevShm: false,
     noKeepVarTmp: false, noMachineId: false, noRamWriteExec: true, no3d: true,
@@ -156,10 +159,9 @@ when isMainModule:
   # echo $myjail.list()
   # echo myjail.tree()
   echo myjail.exec(
-    command="myApp", timeout=255.byte, name="myApp",
-    gateway="10.0.0.1", hostsFile="/etc/hosts", logfile="/tmp/myApp.log",
-    chroot="/tmp/chroot", tmpfs="/tmp/chroot",
-    dnsServers=["8.8.8.8", "8.8.4.4", "10.0.0.1", "10.0.0.2"],
+    command="myApp", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
+    hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot",
+    tmpfs="/tmp/chroot", dnsServers=["8.8.8.8", "8.8.4.4", "10.0.0.1", "10.0.0.2"],
     whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"]
   )
 
