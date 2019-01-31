@@ -20,6 +20,11 @@ _...and why should I use it?_
 - **Why your web server needs full access to the whole System?.** 🤔
 
 
+# Requisites
+
+- [Firejail](https://firejail.wordpress.com/features-3/#namespaces)
+
+
 # Install
 
 - `nimble install firejail`
