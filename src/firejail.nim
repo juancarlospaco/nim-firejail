@@ -1,7 +1,3 @@
-# https://www.digitalocean.com/community/tutorials/how-to-use-firejail-to-set-up-a-wordpress-installation-in-a-jailed-environment
-# https://l3net.wordpress.com/2014/06/08/securing-a-web-server-using-a-linux-namespaces-sandbox/
-# https://hans-hermann-bode.de/en/content/web-server-sandbox
-# https://www.youtube.com/watch?v=UgddGZca5XU
 import os, osproc, strutils, json
 
 const
@@ -34,10 +30,10 @@ proc tree*(this: Firejail): string {.inline.} =
   let (output, exitCode) = execCmdEx("firejail --tree")
   if exitCode == 0: result = output.strip
 
-proc shutdown*(this: Firejail, pid: int): auto {.inline.} =
+proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   ## Shutdown a running Firejail sandbox by PID.
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
-  execCmdEx("firejail --shutdown=" & $pid)
+  execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
 proc exec*(this: Firejail): string =
   ## Run a process on a Firejails sandbox, using the provided config.
