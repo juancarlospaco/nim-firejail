@@ -43,7 +43,7 @@ proc exec*(this: Firejail): string =
 
 
 runnableExamples:
-  import json
+  import json ## Minimum possible basic Example.
   echo $Firejail().list()
   echo Firejail().tree()
 
