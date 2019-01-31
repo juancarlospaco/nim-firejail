@@ -51,7 +51,7 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
 proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
-           gateway="", hostsFile="", logfile="", chroot="", tmpfs="",
+           gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string]= @[], blacklist: seq[string]= @[],
            dnsServers: array[4, string] = ["", "", "", ""]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
@@ -65,7 +65,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
 
   let
     nam = name.normalize.quoteShell
-    lgs = logfile.normalize.quoteShell
+    lgs = logFile.normalize.quoteShell
 
   var blancas: string
   if whitelist != @[]:
