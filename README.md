@@ -14,3 +14,4 @@ _...and why should I use it?_
 - https://l3net.wordpress.com/2014/06/08/securing-a-web-server-using-a-linux-namespaces-sandbox
 - https://hans-hermann-bode.de/en/content/web-server-sandbox
 - https://medium.com/@george.shuklin/on-using-firejail-for-network-isolation-in-tests-42f018ecdcac
+- https://jaxenter.com/anti-docker-blog-114422.html
