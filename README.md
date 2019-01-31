@@ -49,7 +49,7 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 # API
 
 - API is a 1-1 copy of the CLI Firejails API, so any Firejails Docs work too.
-- Best Linux Security made super easy, just 4 `proc`, ~`32` Lines of code.
+- Best Linux Security made super easy, just 4 `proc`, ~`110` Lines of code.
 - Timeout is on Hours, up to `255` hours, `byte` type, when the timeout is reached the Jail is auto stopped.
 - `dnsServers` is 1 array of 4 strings, for 4 DNS Servers, `array[4, string]` type, 4 IP addresses must be provided.
 - `blacklist` is 1 seq of strings, `seq[string]` type, paths must exist.
