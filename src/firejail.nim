@@ -52,8 +52,7 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 
 proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
            gateway="", hostsFile="", logfile="", chroot="", tmpfs="",
-           whitelistFolder: seq[string]= @[], blacklistFolder: seq[string]= @[],
-           ): auto =
+           whitelist: seq[string]= @[], blacklist: seq[string]= @[]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   when not defined(release): # Defensive programming when not build for release.
     if hostsFile != "":
@@ -66,6 +65,16 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
   let
     nam = name.normalize.quoteShell
     lgs = logfile.normalize.quoteShell
+
+  var blancas: string
+  if whitelist != @[]:
+    for folder in whitelist:
+      blancas.add " --whitelist=" & folder.quoteShell
+
+  var negras: string
+  if blacklist != @[]:
+    for folder in blacklist:
+      negras.add " --blacklist=" & folder.quoteShell
 
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
@@ -108,14 +117,12 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
     if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
     if dns != "":         "--dns=" & dns.quoteShell else: "",
     if gateway != "":     "--defaultgw=" & gateway.quoteShell else: "",
-    if whitelistFolder != "": "--whitelist=" & $whitelistFolder.normalize else: "",
-    if blacklistFolder != "": "--blacklist=" & $blacklistFolder.normalize else: "",
     if hostsFile != "":   "--hosts-file=" & hostsFile.quoteShell else: "",
     if logfile != "":     "--output=" & lgs & "--output-stderr=" & lgs else: "",
     if chroot != "":      "--chroot=" & chroot.quoteShell else: "",
     if tmpfs != "":       "--tmpfs=" & tmpfs.quoteShell else: "",
 
-    command,
+    blancas, negras, command,
   ].join(" ")
   when not defined(release): echo cmd
   # execCmdEx(cmd)
