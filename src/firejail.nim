@@ -1,5 +1,6 @@
 ## .. image:: https://source.unsplash.com/-YGdiRcY9Sc/800x402
 import os, osproc, strutils, json, random
+from ospaths import quoteShell
 
 const
   h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
@@ -49,11 +50,23 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail, command: string, timeout=0, name="", dns="",
-           gateway="", whitelistFolder="", blacklistFolder="", hostsFile="",
-           logfile="",
+proc exec*(this: Firejail, command: string, timeout: byte =0, name="", dns="",
+           gateway="", hostsFile="", logfile="", chroot="", tmpfs="",
+           whitelistFolder: seq[string]= @[], blacklistFolder: seq[string]= @[],
            ): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
+  when not defined(release): # Defensive programming when not build for release.
+    if hostsFile != "":
+      assert hostsFile.existsFile, "hostsFile not found, hostsFile must be readable"
+    if chroot != "":
+      assert chroot.existsDir, "chroot folder not found, chroot must be writable"
+    if tmpfs != "":
+      assert tmpfs.existsDir, "tmpfs folder not found, tmpfs must be writable"
+
+  let
+    nam = name.normalize.quoteShell
+    lgs = logfile.normalize.quoteShell
+
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
     if this.noAllusers:   "" else: "--allusers",
@@ -87,19 +100,20 @@ proc exec*(this: Firejail, command: string, timeout=0, name="", dns="",
     if this.useNice20:    "--nice=20" else: "",
     if this.forceEnUsUtf8: enUsUtf8 else: "",
     if this.useMtuJumbo9000: "--mtu=9000" else: "",
-    if this.useRandomMac:    "--mac=" & randomMacAddress() else: "",
+    if this.useRandomMac:    "--mac=" & randomMacAddress().quoteShell else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
 
-    if timeout != 0:      "--timeout=" & $timeout & ":00:00" else: "",
-    if name != "":        "--name=" & $name.normalize & " --hostname=" & $name.normalize else: "",
-    if dns != "":         "--dns=" & $dns.normalize else: "",
-    if gateway != "":     "--defaultgw=" & $gateway.normalize else: "",
+    if timeout != 0:      "--timeout=" & quoteShell($timeout & ":00:00") else: "",
+    if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
+    if dns != "":         "--dns=" & dns.quoteShell else: "",
+    if gateway != "":     "--defaultgw=" & gateway.quoteShell else: "",
     if whitelistFolder != "": "--whitelist=" & $whitelistFolder.normalize else: "",
     if blacklistFolder != "": "--blacklist=" & $blacklistFolder.normalize else: "",
-    if hostsFile != "":   "--hosts-file=" & $hostsFile.normalize else: "",
-    if logfile != "":     "--output=" & $logfile.normalize & "--output-stderr=" & $logfile.normalize else: "",
-
+    if hostsFile != "":   "--hosts-file=" & hostsFile.quoteShell else: "",
+    if logfile != "":     "--output=" & lgs & "--output-stderr=" & lgs else: "",
+    if chroot != "":      "--chroot=" & chroot.quoteShell else: "",
+    if tmpfs != "":       "--tmpfs=" & tmpfs.quoteShell else: "",
 
     command,
   ].join(" ")
@@ -132,7 +146,6 @@ when isMainModule:
   echo myjail.exec("myApp")
 
     # --bandwidth=name|pid - set bandwidth limits.
-    # --chroot=dirname - chroot into directory.
     # --cpu=cpu-number,cpu-number - set cpu affinity.
     # --ip=address - set interface IP address.
     # --ip6=address - set interface IPv6 address.
@@ -146,4 +159,3 @@ when isMainModule:
     # --rlimit-nofile=number - set the maximum number of files that can be opened by a process.
     # --rlimit-nproc=number - set the maximum number of processes that can be created for the real user ID of the calling process.
     # --rlimit-sigpending=number - set the maximum number of pending signals for a process.
-    # --tmpfs=dirname - mount a tmpfs filesystem on directory dirname.
