@@ -15,3 +15,21 @@ _...and why should I use it?_
 - https://hans-hermann-bode.de/en/content/web-server-sandbox
 - https://medium.com/@george.shuklin/on-using-firejail-for-network-isolation-in-tests-42f018ecdcac
 - https://jaxenter.com/anti-docker-blog-114422.html
+
+
+# Use
+
+```nim
+import firejail
+
+let myjail = Firejail(no3d=true, noDbus=true, noDvd=true, noRoot=true, noSound=true,
+                      noVideo=true, noShell=true, noX=true, noNet=true, noIp=true)
+
+echo myjail.list() # List all Firejails sandboxes running, seq[JsonNode]
+
+echo myjail.tree() # List all Firejails sandboxes running, Human friendly string
+
+echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool
+
+# For more read the Docs...
+```
