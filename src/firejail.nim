@@ -42,10 +42,10 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail): auto =
+proc exec*(this: Firejail, command: string): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   let cmd = [
-    "firejail --quiet --noprofile",
+    "firejail --quiet --noprofile", # quiet for performance reasons.
     if this.noAllusers:   "" else: "--allusers",
     if this.apparmor:     "--apparmor" else: "",
     if this.caps:         "--caps" else: "",
@@ -79,6 +79,7 @@ proc exec*(this: Firejail): auto =
     if this.useMtuJumbo9000: "--mtu=9000" else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
+    command,
   ].join(" ")
   #when not defined(release): echo cmd
   # execCmdEx(cmd)
@@ -92,9 +93,20 @@ runnableExamples:
 
 
 when isMainModule:
-  #echo $Firejail().list()
-  #echo Firejail().tree()
-  echo Firejail().exec()
+  # let myjail = Firejail()
+  let myjail = Firejail( # ALL options used here, dont worry they are optional!
+    noAllusers: false, apparmor: true, caps: true, noKeepDevShm: false,
+    noKeepVarTmp: false, noMachineId: false, noRamWriteExec: true, no3d: true,
+    noDbus: true, noDvd: true, noGroups: true, noNewPrivs: true, noRoot: true,
+    noSound: true, noAutoPulse: true, noVideo: true, forceEnUsUtf8: true,
+    noU2f: true, overlayClean: true, privateTmp: true, private: true,
+    privateCache: true, privateDev: true, seccomp: true, noShell: true,
+    noNet: true, noIp: true, noDebuggers: false, newIpcNamespace: true,
+    appimage: true, useMtuJumbo9000: true, useNice20: true, noX: true,
+  )
+  # echo $myjail.list()
+  # echo myjail.tree()
+  echo myjail.exec("myApp")
 
     # --bandwidth=name|pid - set bandwidth limits.
     # --blacklist=filename - blacklist directory or file.
@@ -113,7 +125,6 @@ when isMainModule:
     # --net=bridgename - enable network namespaces and connect to this bridge.
     # --net=ethernet_interface - enable network namespaces and connect to this
     #     Ethernet interface.
-    # --nice=value - set nice value.
     # --output=logfile - stdout logging and log rotation.
     # --output-stderr=logfile - stdout and stderr logging and log rotation.
     # --rlimit-as=number - set the maximum size of the process's virtual memory
@@ -123,7 +134,6 @@ when isMainModule:
     # --rlimit-nofile=number - set the maximum number of files that can be opened by a process.
     # --rlimit-nproc=number - set the maximum number of processes that can be created for the real user ID of the calling process.
     # --rlimit-sigpending=number - set the maximum number of pending signals for a process.
-    # --shutdown=name|pid - shutdown the sandbox identified by name or PID.
     # --timeout=hh:mm:ss - kill the sandbox automatically after the time has elapsed.
     # --tmpfs=dirname - mount a tmpfs filesystem on directory dirname.
     # --whitelist=filename - whitelist directory or file.
