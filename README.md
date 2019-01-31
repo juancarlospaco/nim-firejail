@@ -17,6 +17,11 @@ _...and why should I use it?_
 - https://jaxenter.com/anti-docker-blog-114422.html
 
 
+# Install
+
+- `nimble install firejail`
+
+
 # Use
 
 ```nim
