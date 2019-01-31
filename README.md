@@ -26,9 +26,9 @@ import firejail
 let myjail = Firejail(no3d=true, noDbus=true, noDvd=true, noRoot=true, noSound=true,
                       noVideo=true, noShell=true, noX=true, noNet=true, noIp=true)
 
-echo myjail.list() # List all Firejails sandboxes running, seq[JsonNode]
+echo myjail.list() # List all Firejails sandboxes running, return seq[JsonNode]
 
-echo myjail.tree() # List all Firejails sandboxes running, Human friendly string
+echo myjail.tree() # List all Firejails sandboxes running, return human friendly string
 
 echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool
 
