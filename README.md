@@ -49,3 +49,4 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 - Run `nim doc firejails.nim` for more Documentation.
 - Run `nim genDepend firejail.nim` for Graphics of internal code structure.
 - Run `nim c -r firejails.nim` for an Example.
+- Are you a Security Expert?, Pull Requests welcome!.
