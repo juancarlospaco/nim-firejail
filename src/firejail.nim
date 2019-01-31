@@ -1,6 +1,7 @@
 ## .. image:: https://source.unsplash.com/-YGdiRcY9Sc/800x402
-import os, osproc, strutils, json, random
+import strutils, json, random
 from ospaths import quoteShell
+from osproc import execCmdEx
 
 const
   h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
@@ -55,10 +56,6 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
-  when not defined(release):
-    if hostsFile != "":
-      assert hostsFile.existsFile, "hostsFile not found, hostsFile must be readable"
-
   let
     nam = name.normalize.quoteShell
     lgs = logFile.normalize.quoteShell
@@ -154,10 +151,11 @@ when isMainModule:
   )
   # echo $myjail.list()
   # echo myjail.tree()
+  # echo myjail.exec("myApp")
   echo myjail.exec(
     command="myApp", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
-    hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot",
-    tmpfs="/tmp/chroot", dnsServers=["8.8.8.8", "8.8.4.4", "10.0.0.1", "10.0.0.2"],
+    hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
+    tmpfs="/tmp/tmpfs", dnsServers=["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.1.1.2"],
     whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"]
   )
 
