@@ -55,8 +55,8 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 - `blacklist` is 1 seq of strings, `seq[string]` type, paths must exist.
 - `whitelist` is 1 seq of strings, `seq[string]` type, paths must exist.
 - `hostsFile` is 1 file path string, will be the Jails `/etc/hosts`, `string` type, file must exist.
-- `chroot` is 1 folder path string, `string` type, folder must exist.
-- `tmpfs` is 1 folder path string, `string` type, folder must exist.
+- `chroot` is 1 folder path string, will be the Jails chroot isolated filesystem, `string` type, folder must exist.
+- `tmpfs` is 1 folder path string, will be the Jails tmpfs temporary isolated filesystem, `string` type, folder must exist.
 - Run `nim doc firejails.nim` for more Documentation.
 - Run `nim genDepend firejail.nim` for UML Graphics of internal code structure.
 - Run `nim c -r firejails.nim` for an Example.
