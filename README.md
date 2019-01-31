@@ -45,7 +45,7 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 ```
 
 - API is a 1-1 copy of the CLI Firejails API, so any Firejails Docs work too.
-- Best Linux Security made super easy, just 4 `proc`.
+- Best Linux Security made super easy, just 4 `proc`, `32` Lines of code.
 - Run `nim doc firejails.nim` for more Documentation.
 - Run `nim genDepend firejail.nim` for Graphics of internal code structure.
 - Run `nim c -r firejails.nim` for an Example.
