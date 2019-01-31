@@ -22,6 +22,7 @@ _...and why should I use it?_
 ```nim
 import firejail
 
+# Create a Firejail, all args are optional, all options are Boolean, super easy!.
 let myjail = Firejail(no3d=true, noDbus=true, noDvd=true, noRoot=true, noSound=true,
                       noVideo=true, noShell=true, noX=true, noNet=true, noIp=true)
 
