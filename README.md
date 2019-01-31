@@ -59,6 +59,16 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 
 Yes.
 
+- I have Docker, I dont need this?.
+
+Docker current issues is a lack of strong security,
+1 security breach in 1 container can be exploited to access all containers on the server,
+since containers share resources with each others.
+This doesnt do virtualization but is more like a locked-down secure chroot jail,
+which grants a locked-down view of a system.
+Sometimes even basic tiny libs and drivers have security vulnerabilities, virtualized or not.
+With this your software can only access what it needs to access, and not a whole system, virtualized or not.
+
 - This works with JavaScript?
 
 No. `firejail` cant run on the browser.
