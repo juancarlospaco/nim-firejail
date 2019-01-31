@@ -132,7 +132,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.useRandomMac:       "--mac=" & randomMacAddress().quoteShell else: "",
     if this.newIpcNamespace:    "--ipc-namespace" else: "",
     if this.noRamWriteExec:     "--memory-deny-write-execute" else: "",
-    if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",") else: "",
+    if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",").quoteShell else: "",
 
     denese, blancas, negras, command.quoteShell
   ].join(" ")
