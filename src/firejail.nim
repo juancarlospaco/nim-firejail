@@ -21,7 +21,7 @@ type
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
   let (output, exitCode) = execCmdEx("firejail --list")
-  if exitCode == 0:
+  if exitCode == 0 and output.strip.len > 1:
     for line in output.strip.splitLines:
       var l = line.split(":")
       result.add %*{"pid": l[0], "user": l[1], "name": l[2], "command": l[3]}
@@ -42,9 +42,15 @@ proc exec*(this: Firejail): string =
   if exitCode == 0: result = output.strip
 
 
-echo Firejail().list()
-echo Firejail().tree()
+runnableExamples:
+  import json
+  echo $Firejail().list()
+  echo Firejail().tree()
 
+
+when isMainModule:
+  echo Firejail().list()
+  echo Firejail().tree()
 
     # --bandwidth=name|pid - set bandwidth limits.
     # --blacklist=filename - blacklist directory or file.
