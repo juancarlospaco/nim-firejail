@@ -68,9 +68,9 @@ proc exec*(this: Firejail): auto =
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
   ].join(" ")
-  when not defined(release): echo cmd
+  #when not defined(release): echo cmd
   # execCmdEx(cmd)
-  echo cmd
+  cmd
 
 
 runnableExamples:
@@ -80,8 +80,9 @@ runnableExamples:
 
 
 when isMainModule:
-  echo $Firejail().list()
-  echo Firejail().tree()
+  #echo $Firejail().list()
+  #echo Firejail().tree()
+  echo Firejail().exec()
 
     # --bandwidth=name|pid - set bandwidth limits.
     # --blacklist=filename - blacklist directory or file.
