@@ -12,7 +12,7 @@ let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
-    noAllusers*, apparmor*, noCaps*, keepDevShm*, keepVarTmp*: bool
+    noAllusers*, apparmor*, caps*, noKeepDevShm*, noKeepVarTmp*: bool
     noMachineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
     noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
     noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
@@ -39,37 +39,38 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 proc exec*(this: Firejail): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   let cmd = [
-    "firejail",
-    if this.noAllusers: "" else: "",
-    if this.apparmor: "" else: "",
-    if this.noCaps: "" else: "",
-    if this.keepDevShm: "" else: "",
-    if this.keepVarTmp: "" else: "",
-    if this.noMachineId: "" else: "",
-    if this.noRamWriteExecute: "" else: "",
-    if this.no3d: "" else: "",
-    if this.noDbus: "" else: "",
-    if this.noDvd: "" else: "",
-    if this.noGroups: "" else: "",
-    if this.noNewPrivs: "" else: "",
-    if this.noRoot: "" else: "",
-    if this.noSound: "" else: "",
-    if this.noAutoPulse: "" else: "",
-    if this.noVideo: "" else: "",
-    if this.noU2f: "" else: "",
-    if this.overlayClean: "" else: "",
-    if this.privateTmp: "" else: "",
-    if this.private: "" else: "",
-    if this.privateCache: "" else: "",
-    if this.privateDev: "" else: "",
-    if this.seccomp: "" else: "",
-    if this.noShell: "" else: "",
-    if this.noX: "" else: "",
-    if this.noNet: "" else: "",
-    if this.noIp: "" else: "",
+    "firejail --quiet --noprofile",
+    if this.noAllusers:   "" else: "--allusers",
+    if this.apparmor:     "--apparmor" else: "",
+    if this.caps:         "--caps" else: "",
+    if this.noKeepDevShm: "" else: "--keep-dev-shm",
+    if this.noKeepVarTmp: "" else: "--keep-var-tmp",
+    if this.noMachineId:  "--machine-id" else: "",
+    if this.noRamWriteExecute: "--memory-deny-write-execute" else: "",
+    if this.no3d:         "--no3d" else: "",
+    if this.noDbus:       "--nodbus" else: "",
+    if this.noDvd:        "--nodvd" else: "",
+    if this.noGroups:     "--nogroups" else: "",
+    if this.noNewPrivs:   "--nonewprivs" else: "",
+    if this.noRoot:       "--noroot" else: "",
+    if this.noSound:      "--nosound" else: "",
+    if this.noAutoPulse:  "--noautopulse" else: "",
+    if this.noVideo:      "--novideo" else: "",
+    if this.noU2f:        "--nou2f" else: "",
+    if this.overlayClean: "--overlay-clean" else: "",
+    if this.privateTmp:   "--private-tmp" else: "",
+    if this.private:      "--private" else: "",
+    if this.privateCache: "--private-cache" else: "",
+    if this.privateDev:   "--private-dev" else: "",
+    if this.seccomp:      "--seccomp" else: "",
+    if this.noShell:      "--shell=none" else: "",
+    if this.noX:          "--x11=none" else: "--x11",
+    if this.noNet:        "--net=none" else: "",
+    if this.noIp:         "--ip=none" else: "",
   ].join(" ")
   when not defined(release): echo cmd
   # execCmdEx(cmd)
+  echo cmd
 
 
 runnableExamples:
