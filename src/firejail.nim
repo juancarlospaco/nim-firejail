@@ -49,7 +49,10 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail, command: string): auto =
+proc exec*(this: Firejail, command: string, timeout=0, name="", dns="",
+           gateway="", whitelistFolder="", blacklistFolder="", hostsFile="",
+           logfile="",
+           ): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
@@ -87,6 +90,17 @@ proc exec*(this: Firejail, command: string): auto =
     if this.useRandomMac:    "--mac=" & randomMacAddress() else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
+
+    if timeout != 0:      "--timeout=" & $timeout & ":00:00" else: "",
+    if name != "":        "--name=" & $name.normalize & " --hostname=" & $name.normalize else: "",
+    if dns != "":         "--dns=" & $dns.normalize else: "",
+    if gateway != "":     "--defaultgw=" & $gateway.normalize else: "",
+    if whitelistFolder != "": "--whitelist=" & $whitelistFolder.normalize else: "",
+    if blacklistFolder != "": "--blacklist=" & $blacklistFolder.normalize else: "",
+    if hostsFile != "":   "--hosts-file=" & $hostsFile.normalize else: "",
+    if logfile != "":     "--output=" & $logfile.normalize & "--output-stderr=" & $logfile.normalize else: "",
+
+
     command,
   ].join(" ")
   when not defined(release): echo cmd
@@ -118,22 +132,13 @@ when isMainModule:
   echo myjail.exec("myApp")
 
     # --bandwidth=name|pid - set bandwidth limits.
-    # --blacklist=filename - blacklist directory or file.
     # --chroot=dirname - chroot into directory.
     # --cpu=cpu-number,cpu-number - set cpu affinity.
-    # --defaultgw=address - configure default gateway.
-    # --dns=address - set DNS server.
-    # --env=name=value - set environment variable.
-    # --hostname=name - set sandbox hostname.
-    # --hosts-file=file - use file as /etc/hosts.
     # --ip=address - set interface IP address.
     # --ip6=address - set interface IPv6 address.
-    # --name=name - set sandbox name.
     # --net=bridgename - enable network namespaces and connect to this bridge.
     # --net=ethernet_interface - enable network namespaces and connect to this
     #     Ethernet interface.
-    # --output=logfile - stdout logging and log rotation.
-    # --output-stderr=logfile - stdout and stderr logging and log rotation.
     # --rlimit-as=number - set the maximum size of the process's virtual memory
     #     (address space) in bytes.
     # --rlimit-cpu=number - set the maximum CPU time in seconds.
@@ -141,6 +146,4 @@ when isMainModule:
     # --rlimit-nofile=number - set the maximum number of files that can be opened by a process.
     # --rlimit-nproc=number - set the maximum number of processes that can be created for the real user ID of the calling process.
     # --rlimit-sigpending=number - set the maximum number of pending signals for a process.
-    # --timeout=hh:mm:ss - kill the sandbox automatically after the time has elapsed.
     # --tmpfs=dirname - mount a tmpfs filesystem on directory dirname.
-    # --whitelist=filename - whitelist directory or file.
