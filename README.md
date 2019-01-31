@@ -68,6 +68,8 @@ This doesnt do virtualization but is more like a locked-down secure chroot jail,
 which grants a locked-down view of a system.
 Sometimes even basic tiny libs and drivers have security vulnerabilities, virtualized or not.
 With this your software can only access what it needs to access, and not a whole system, virtualized or not.
+This works with simple booleans, as example `noDbus=true` and D-Bus is gone,
+but good luck stripping all D-Bus from the Ubuntu running inside that Docker.
 
 - This works with JavaScript?
 
