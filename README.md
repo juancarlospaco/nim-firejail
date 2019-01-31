@@ -17,6 +17,7 @@ _...and why should I use it?_
 - https://hans-hermann-bode.de/en/content/web-server-sandbox
 - https://medium.com/@george.shuklin/on-using-firejail-for-network-isolation-in-tests-42f018ecdcac
 - https://jaxenter.com/anti-docker-blog-114422.html
+- **Why your web server needs full access to the whole System?.** 🤔
 
 
 # Install
