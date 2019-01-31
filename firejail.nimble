@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "Juan Carlos"
-description   = "Firejail wrapper for Nim, Firejail your Production App before is too late!"
+description   = "Firejail wrapper for Nim, Isolate your Production App before its too late!"
 license       = "MIT"
 srcDir        = "src"
 
