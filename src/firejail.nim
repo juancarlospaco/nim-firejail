@@ -1,6 +1,7 @@
 # https://www.digitalocean.com/community/tutorials/how-to-use-firejail-to-set-up-a-wordpress-installation-in-a-jailed-environment
 # https://l3net.wordpress.com/2014/06/08/securing-a-web-server-using-a-linux-namespaces-sandbox/
 # https://hans-hermann-bode.de/en/content/web-server-sandbox
+# https://www.youtube.com/watch?v=UgddGZca5XU
 import os, osproc, strutils, json
 
 const
@@ -18,7 +19,7 @@ type
     noMachineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
     noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
     noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
-    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*: bool
+    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*: bool ## Boolean options
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
