@@ -32,7 +32,7 @@ echo myjail.tree() # List all Firejails sandboxes running, return string (human 
 
 echo myjail.shutdown(pid=42) # Shutdown a running Firejail sandbox by PID, return bool, true if Ok
 
-echo myjail.exec("myApp") # Run your App isolated inside the Firejail.
+echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail.
 
 # For more info read the Docs...
 ```
