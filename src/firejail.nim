@@ -20,12 +20,12 @@ let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
-    noAllusers*, apparmor*, caps*, noKeepDevShm*, noKeepVarTmp*: bool
-    noMachineId*, noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*: bool
-    noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8: bool
-    noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
-    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*: bool
-    newIpcNamespace*, appimage*, useMtuJumbo9000*, useNice20*, useRandomMac*: bool
+    noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
+    noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
+    noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8, noU2f*: bool
+    overlayClean*, privateTmp*, private*, privateCache*, privateDev*: bool
+    seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*, appimage*: bool
+    newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
 
 proc randomMacAddress(): string =
   ## Return 1 Random MAC Addres string.
@@ -81,13 +81,14 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
         denese.add " --dns=" & servo.quoteShell
 
   let cmd = [
-    "firejail --quiet --noprofile", # quiet for performance reasons.
+    "firejail --noprofile",
+
+    when defined(release): "--quiet", # quiet for performance reasons.
 
     if this.noAllusers:   "" else: "--allusers",
     if this.apparmor:     "--apparmor" else: "",
     if this.caps:         "--caps" else: "",
     if this.noKeepDevShm: "" else: "--keep-dev-shm",
-    if this.noKeepVarTmp: "" else: "--keep-var-tmp",
     if this.noMachineId:  "" else: "--machine-id",
     if this.no3d:         "--no3d" else: "",
     if this.noDbus:       "--nodbus" else: "",
@@ -106,7 +107,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.privateDev:   "--private-dev" else: "",
     if this.seccomp:      "--seccomp" else: "",
     if this.noShell:      "--shell=none" else: "",
-    if this.noX:          "--x11=none" else: "--x11",
+    if this.noX:          "--x11=none" else: "",
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
     if this.noDebuggers:  "" else: "--allow-debuggers",
@@ -136,8 +137,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     denese, blancas, negras, command.quoteShell
   ].join(" ")
   when not defined(release): echo cmd
-  # execCmdEx(cmd)
-  cmd
+  execCmdEx(cmd)
 
 
 runnableExamples:
@@ -147,21 +147,16 @@ runnableExamples:
 
 
 when isMainModule:
-  # let myjail = Firejail()   # Works with no options too, sane defaults.
   let myjail = Firejail( # ALL options used here, dont worry they are optional!
-    noAllusers: false, apparmor: true, caps: true, noKeepDevShm: false,
-    noKeepVarTmp: false, noMachineId: false, noRamWriteExec: true, no3d: true,
-    noDbus: true, noDvd: true, noGroups: true, noNewPrivs: true, noRoot: true,
-    noSound: true, noAutoPulse: true, noVideo: true, forceEnUsUtf8: true,
-    noU2f: true, overlayClean: true, privateTmp: true, private: true,
-    privateCache: true, privateDev: true, seccomp: true, noShell: true,
-    noNet: true, noIp: true, noDebuggers: false, newIpcNamespace: true,
-    appimage: true, useMtuJumbo9000: true, useNice20: true, noX: true,
-    useRandomMac: true,
+    noAllusers: false, apparmor: false, caps: true, noKeepDevShm: false,
+    noMachineId: false, noRamWriteExec: true, no3d: true, noDbus: true,
+    noDvd: true, noGroups: true, noNewPrivs: true, noRoot: true, noSound: true,
+    noAutoPulse: true, noVideo: true, forceEnUsUtf8: true, noU2f: true,
+    overlayClean: true, privateTmp: true, private: true, privateCache: true,
+    privateDev: true, seccomp: true, noShell: true, noNet: true, noIp: true,
+    noDebuggers: false, newIpcNamespace: true, appimage: true,
+    useMtuJumbo9000: true, useNice20: true, noX: true, useRandomMac: true,
   )
-  echo $myjail.list()
-  echo myjail.tree()
-  # echo myjail.exec("myApp") # Works with no options too, sane defaults.
   echo myjail.exec(      # ALL options used here, dont worry they are optional!
     command="echo 42", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
     hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
@@ -171,3 +166,8 @@ when isMainModule:
     maxPendingSignals=int16.high, maxRam=int16.high, maxCpu=int32.high,
     cpuCoresByNumber= @[0, 2], #Only CPU Cores 0 & 2 can be used inside Firejail
   )
+
+  # let myjail2 = Firejail()     # Works with no options too, sane defaults.
+  # echo myjail2.exec("echo 42") # Works with no options too, sane defaults.
+  # echo $myjail2.list()
+  # echo myjail2.tree()
