@@ -74,3 +74,13 @@ but good luck stripping all D-Bus from the Ubuntu running inside that Docker.
 - This works with JavaScript?
 
 No. `firejail` cant run on the browser.
+
+- Whats the option `useMtuJumbo9000`?.
+
+Network MTU Jumbo Frames. https://wiki.archlinux.org/index.php/jumbo_frames
+This is just a shortcut to improve UX and usability.
+
+- Whats the option `forceEnUsUtf8`?.
+
+Forces `EN` English as language and `UTF-8` Unicode as encoding on Firejail.
+This is just a shortcut to improve UX and usability.
