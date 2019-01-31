@@ -13,10 +13,11 @@ let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 type
   Firejail* = object  ## Firejail Security Sandbox.
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noKeepVarTmp*: bool
-    noMachineId*, noRamWriteExecute*, no3d*, noDbus*, noDvd*, noGroups*: bool
+    noMachineId*, noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*: bool
     noNewPrivs*, noRoot*, noSound*, noAutoPulse*, noVideo*: bool
     noU2f*, overlayClean*, privateTmp*, private*, privateCache*: bool
-    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*: bool ## Boolean options
+    privateDev*, seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*: bool
+    newIpcNamespace*, appimage*, useMtuJumbo9000*, useNice20*: bool
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
@@ -66,7 +67,12 @@ proc exec*(this: Firejail): auto =
     if this.noX:          "--x11=none" else: "--x11",
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
-    if this.noRamWriteExecute: "--memory-deny-write-execute" else: "",
+    if this.noDebuggers:  "" else: "--allow-debuggers",
+    if this.appimage:     "--appimage" else: "",
+    if this.useNice20:    "--nice=20" else: "",
+    if this.useMtuJumbo9000: "--mtu=9000" else: "",
+    if this.newIpcNamespace: "--ipc-namespace" else: "",
+    if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
   ].join(" ")
   #when not defined(release): echo cmd
   # execCmdEx(cmd)
