@@ -45,8 +45,18 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 # For more info read the Docs...
 ```
 
+
+# API
+
 - API is a 1-1 copy of the CLI Firejails API, so any Firejails Docs work too.
 - Best Linux Security made super easy, just 4 `proc`, ~`32` Lines of code.
+- Timeout is on Hours, up to `255` hours, `byte` type, when timeout is reached Jail is auto stopped.
+- `dnsServers` is 1 array of 4 strings, for 4 DNS Servers, `array[4, string]` type, 4 IP addresses must be provided.
+- `blacklist` is 1 seq of strings, `seq[string]` type, paths must exist.
+- `whitelist` is 1 seq of strings, `seq[string]` type, paths must exist.
+- `hostsFile` is 1 file path string, `string` type, file must exist.
+- `chroot` is 1 folder path string, `string` type, folder must exist.
+- `tmpfs` is 1 folder path string, `string` type, folder must exist.
 - Run `nim doc firejails.nim` for more Documentation.
 - Run `nim genDepend firejail.nim` for UML Graphics of internal code structure.
 - Run `nim c -r firejails.nim` for an Example.
