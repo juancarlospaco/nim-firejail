@@ -52,7 +52,7 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 
 proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
-           whitelist: seq[string]= @[], blacklist: seq[string]= @[],
+           whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   when not defined(release):
