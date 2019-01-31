@@ -41,3 +41,5 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 
 # For more info read the Docs...
 ```
+
+- API is a 1-1 copy of the CLI Firejails API, so Firejails Docs work too.
