@@ -77,10 +77,23 @@ No. `firejail` cant run on the browser.
 
 - Whats the option `useMtuJumbo9000`?.
 
-Network MTU Jumbo Frames. https://wiki.archlinux.org/index.php/jumbo_frames
+Network MTU Jumbo Frames. This is optional.
 This is just a shortcut to improve UX.
+https://wiki.archlinux.org/index.php/jumbo_frames
 
 - Whats the option `forceEnUsUtf8`?.
 
 Forces `EN` English as language and `UTF-8` Unicode as encoding on Firejail.
+This is optional. This is just a shortcut to improve UX.
+
+- Whats the option `useRandomMac`?.
+
+Random Network MAC Address on Firejail. This is optional.
 This is just a shortcut to improve UX.
+
+- Why use a Random MAC Address?.
+
+Devices send a signal to look for networks,
+the signal contains the unique physical hardware (MAC) address for your device,
+this unique address can be used to track you on a network and "map" a network,
+you can use a random MAC address to make it harder to track. This is optional.
