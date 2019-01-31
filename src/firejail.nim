@@ -36,10 +36,11 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail): string =
+proc exec*(this: Firejail): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
-  let (output, exitCode) = execCmdEx("firejail --tree")
-  if exitCode == 0: result = output.strip
+  let cmd = @[]
+  when not defined(release): echo cmd
+  execCmdEx(cmd)
 
 
 runnableExamples:
