@@ -167,7 +167,7 @@ when isMainModule:
     cpuCoresByNumber= @[0, 2], #Only CPU Cores 0 & 2 can be used inside Firejail
   )
 
-  # let myjail2 = Firejail()     # Works with no options too, sane defaults.
-  # echo myjail2.exec("echo 42") # Works with no options too, sane defaults.
-  # echo $myjail2.list()
-  # echo myjail2.tree()
+  let myjail2 = Firejail()     # Works with no options too, sane defaults.
+  echo myjail2.exec("echo 42") # Works with no options too, sane defaults.
+  echo $myjail2.list()
+  echo myjail2.tree()
