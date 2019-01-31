@@ -54,7 +54,10 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
 proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
-           dnsServers: array[4, string] = ["", "", "", ""]): auto =
+           dnsServers: array[4, string] = ["", "", "", ""],
+           maxSubProcesses = 0, maxOpenFiles = 0, maxFileSize = 0,
+           maxPendingSignals = 0, maxRam = 0, maxCpu = 0,
+           cpuCoresByNumber: seq[int] = @[]): auto =
   ## Run a process on a Firejails sandbox, using the provided config.
   let
     nam = name.normalize.quoteShell
@@ -80,6 +83,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
 
   let cmd = [
     "firejail --quiet --noprofile", # quiet for performance reasons.
+
     if this.noAllusers:   "" else: "--allusers",
     if this.apparmor:     "--apparmor" else: "",
     if this.caps:         "--caps" else: "",
@@ -109,12 +113,6 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.noDebuggers:  "" else: "--allow-debuggers",
     if this.appimage:     "--appimage" else: "",
     if this.useNice20:    "--nice=20" else: "",
-    if this.forceEnUsUtf8: enUsUtf8 else: "",
-    if this.useMtuJumbo9000: "--mtu=9000" else: "",
-    if this.useRandomMac:    "--mac=" & randomMacAddress().quoteShell else: "",
-    if this.newIpcNamespace: "--ipc-namespace" else: "",
-    if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
-
     if timeout != 0:      "--timeout=" & quoteShell($timeout & ":00:00") else: "",
     if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
     if gateway != "":     "--defaultgw=" & gateway.quoteShell else: "",
@@ -122,6 +120,19 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     if logfile != "":     "--output=" & lgs & " --output-stderr=" & lgs else: "",
     if chroot != "":      "--chroot=" & chroot.quoteShell else: "",
     if tmpfs != "":       "--tmpfs=" & tmpfs.quoteShell else: "",
+    if maxRam != 0:       "--rlimit-as=" & $maxRam else: "",
+    if maxCpu != 0:       "--rlimit-cpu=" & $maxCpu else: "",
+    if maxFileSize != 0:  "--rlimit-fsize=" & $maxFileSize else: "",
+    if maxOpenFiles != 0: "--rlimit-nofile=" & $maxOpenFiles else: "",
+
+    if maxSubProcesses != 0:    "--rlimit-nproc=" & $maxSubProcesses else: "",
+    if maxPendingSignals != 0:  "--rlimit-sigpending=" & $maxPendingSignals else: "",
+    if this.forceEnUsUtf8:      enUsUtf8 else: "",
+    if this.useMtuJumbo9000:    "--mtu=9000" else: "",
+    if this.useRandomMac:       "--mac=" & randomMacAddress().quoteShell else: "",
+    if this.newIpcNamespace:    "--ipc-namespace" else: "",
+    if this.noRamWriteExec:     "--memory-deny-write-execute" else: "",
+    if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",") else: "",
 
     denese, blancas, negras, command.quoteShell
   ].join(" ")
@@ -156,20 +167,8 @@ when isMainModule:
     command="myApp", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
     hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
     tmpfs="/tmp/tmpfs", dnsServers=["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.1.1.2"],
-    whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"]
+    whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"],
+    maxSubProcesses=int8.high, maxOpenFiles=int8.high, maxFileSize=int32.high,
+    maxPendingSignals=int16.high, maxRam=int16.high, maxCpu=int32.high,
+    cpuCoresByNumber= @[0, 2], #Only CPU Cores 0 & 2 can be used inside Firejail
   )
-
-    # --bandwidth=name|pid - set bandwidth limits.
-    # --cpu=cpu-number,cpu-number - set cpu affinity.
-    # --ip=address - set interface IP address.
-    # --ip6=address - set interface IPv6 address.
-    # --net=bridgename - enable network namespaces and connect to this bridge.
-    # --net=ethernet_interface - enable network namespaces and connect to this
-    #     Ethernet interface.
-    # --rlimit-as=number - set the maximum size of the process's virtual memory
-    #     (address space) in bytes.
-    # --rlimit-cpu=number - set the maximum CPU time in seconds.
-    # --rlimit-fsize=number - set the maximum file size that can be created by a process.
-    # --rlimit-nofile=number - set the maximum number of files that can be opened by a process.
-    # --rlimit-nproc=number - set the maximum number of processes that can be created for the real user ID of the calling process.
-    # --rlimit-sigpending=number - set the maximum number of pending signals for a process.
