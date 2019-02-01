@@ -106,7 +106,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.privateCache: "--private-cache" else: "",
     if this.privateDev:   "--private-dev" else: "",
     if this.seccomp:      "--seccomp" else: "",
-    if this.noShell:      "--shell=none" else: "",
+    if this.noShell:      "--shell=none" else: "--shell=/bin/bash", #ZSH/Fish sometimes fail,force plain old Bash.
     if this.noX:          "--x11=none" else: "",
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
