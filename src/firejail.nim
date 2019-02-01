@@ -83,7 +83,7 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
   let cmd = [
     "firejail --noprofile",
 
-    when defined(release): "--quiet", # quiet for performance reasons.
+    when defined(release): "--quiet" else: "--debug", # quiet for performance.
 
     if this.noAllusers:   "" else: "--allusers",
     if this.apparmor:     "--apparmor" else: "",
