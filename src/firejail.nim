@@ -63,8 +63,8 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
            maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): string =
   ## Return a command of a Firejails sandbox, using the provided config.
   let
-    nam = name.normalize.quoteShell
-    lgs = logFile.normalize.quoteShell
+    nam = name.quoteShell
+    lgs = logFile.quoteShell
 
   var blancas: string
   if whitelist != @[]:
