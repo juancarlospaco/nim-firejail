@@ -5,6 +5,10 @@ from osproc import execCmdEx
 
 const
   h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
+  invalidWhitelist = ["~", "/dev", "/usr", "/etc", "/opt", "/var",
+                      "/bin", "/proc", "/media", "/mnt", "/srv", "/sys"]
+  errBadPath = """Invalid Path for Whitelist: Firejail wont accept this path.
+  Whitelist Sub-Folders of those paths but not the root path itself directly."""
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
   firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
   fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
@@ -23,7 +27,7 @@ type
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
     noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
     noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8*, noU2f*: bool
-    overlayClean*, privateTmp*, private*, privateCache*, privateDev*: bool
+    privateTmp*, private*, privateCache*, privateDev*: bool
     seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*, appimage*: bool
     newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
 
@@ -66,6 +70,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
   if whitelist != @[]:
     for folder in whitelist:
       if folder.strip.len > 1:
+        assert folder notin invalidWhitelist, errBadPath
         blancas.add " --whitelist=" & folder.quoteShell
 
   var negras: string
@@ -100,14 +105,13 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.noAutoPulse:  "--noautopulse" else: "",
     if this.noVideo:      "--novideo" else: "",
     if this.noU2f:        "--nou2f" else: "",
-    if this.overlayClean: "--overlay-clean" else: "",
     if this.privateTmp:   "--private-tmp" else: "",
     if this.private:      "--private" else: "",
     if this.privateCache: "--private-cache" else: "",
     if this.privateDev:   "--private-dev" else: "",
     if this.seccomp:      "--seccomp" else: "",
     if this.noShell:      "--shell=none" else: "--shell=/bin/bash", #ZSH/Fish sometimes fail,force plain old Bash.
-    if this.noX:          "--x11=none" else: "",
+    if this.noX:          "--x11=xvfb" else: "", # "none" complains about network.
     if this.noNet:        "--net=none" else: "",
     if this.noIp:         "--ip=none" else: "",
     if this.noDebuggers:  "" else: "--allow-debuggers",
@@ -164,7 +168,7 @@ when isMainModule:
     noMachineId: false, noRamWriteExec: true, no3d: true, noDbus: true,
     noDvd: true, noGroups: true, noNewPrivs: true, noRoot: true, noSound: true,
     noAutoPulse: true, noVideo: true, forceEnUsUtf8: true, noU2f: true,
-    overlayClean: true, privateTmp: true, private: true, privateCache: true,
+    privateTmp: true, private: true, privateCache: true,
     privateDev: true, seccomp: true, noShell: true, noNet: true, noIp: true,
     noDebuggers: false, newIpcNamespace: true, appimage: true,
     useMtuJumbo9000: true, useNice20: true, noX: true, useRandomMac: true,

@@ -70,6 +70,10 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 
 # FAQ
 
+- Why Firejail?.
+
+Written in C with no dependencies, runs on any Linux, can sandbox any type of processes.
+
 - This works with Docker or Vagrant?.
 
 Yes.
@@ -113,3 +117,20 @@ the signal contains the unique physical hardware (MAC) address for your device,
 this unique address can be used to track you on a network and "map" a network,
 you can use a random MAC address to make it harder to track. This is optional.
 This is just an extra feature so you dont have to do it manually if you need to.
+
+- Why uses `Xvfb` as X Security instead of `Xephyr`, `Xpra` or `none`?.
+
+`Xephyr` and `Xpra` quits complaining about the need to install extra libs.
+`none` quits complaining about the network, seems network dependent.
+`Xvfb` is the one that seems more standalone and dont complain while gets the job done.
+`Xvfb` is usually installed more frequently than `Xephyr` and `Xpra`.
+`Xvfb` is usually used for Continuous Integration and Testing.
+We need one that can run in a Non-Interactive way.
+Firejail by default is more strict than Docker.
+
+- Why "~", "/dev", "/usr", "/etc", "/opt", "/var", "/bin", "/proc" fails to Whitelist?.
+
+Those seems like invalid paths for Whitelisting, Firejail wont accept these paths.
+Your own home directory root path also seems invalid to whitelist,
+but you can whitelist any folder inside your own home directory root path.
+Firejail by default is more strict than Docker.
