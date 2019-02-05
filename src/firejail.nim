@@ -51,13 +51,13 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
+proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
            maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
-           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): auto =
-  ## Run a process on a Firejails sandbox, using the provided config.
+           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): string =
+  ## Return a command of a Firejails sandbox, using the provided config.
   let
     nam = name.normalize.quoteShell
     lgs = logFile.normalize.quoteShell
@@ -137,7 +137,19 @@ proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
     denese, blancas, negras, command.quoteShell
   ].join(" ")
   when not defined(release): echo cmd
-  execCmdEx(cmd)
+  result = cmd
+
+proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
+           gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
+           whitelist: seq[string] = @[], blacklist: seq[string] = @[],
+           dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
+           maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
+           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): auto =
+  ## Return  a process on a Firejails sandbox, using the provided config.
+  result = execCmdEx(makeCommand(
+    this, command, timeout, name, gateway, hostsFile, logFile, chroot, tmpfs,
+    whitelist, blacklist, dnsServers, maxSubProcesses, maxOpenFiles,
+    maxFileSize, maxPendingSignals, maxRam, maxCpu, cpuCoresByNumber))
 
 
 runnableExamples:
