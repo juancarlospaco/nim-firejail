@@ -22,7 +22,7 @@ type
   Firejail* = object  ## Firejail Security Sandbox.
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
     noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
-    noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8, noU2f*: bool
+    noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8*, noU2f*: bool
     overlayClean*, privateTmp*, private*, privateCache*, privateDev*: bool
     seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*, appimage*: bool
     newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
