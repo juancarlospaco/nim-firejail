@@ -27,7 +27,7 @@ type
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
     noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
     noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8*, noU2f*: bool
-    privateTmp*, private*, privateCache*, privateDev*: bool
+    privateTmp*, private*, privateCache*, privateDev*, noTv*: bool
     seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*, appimage*: bool
     newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
 
@@ -105,6 +105,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.noAutoPulse:  "--noautopulse" else: "",
     if this.noVideo:      "--novideo" else: "",
     if this.noU2f:        "--nou2f" else: "",
+    if this.noTv:         "--notv" else: "",
     if this.privateTmp:   "--private-tmp" else: "",
     if this.private:      "--private" else: "",
     if this.privateCache: "--private-cache" else: "",
