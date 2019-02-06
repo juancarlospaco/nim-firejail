@@ -27,7 +27,7 @@ type
     noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
     noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
     noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8*, noU2f*: bool
-    privateTmp*, private*, privateCache*, privateDev*, noTv*: bool
+    privateTmp*, private*, privateCache*, privateDev*, noTv*, writables*: bool
     seccomp*, noShell*, noX*, noNet*, noIp*, noDebuggers*, appimage*: bool
     newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
 
@@ -118,6 +118,13 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.noDebuggers:  "" else: "--allow-debuggers",
     if this.appimage:     "--appimage" else: "",
     if this.useNice20:    "--nice=20" else: "",
+    if this.writables:    "--writable-etc --writable-run-user --writable-var --writable-var-log" else: "",
+    if this.forceEnUsUtf8:   enUsUtf8 else: "",
+    if this.useMtuJumbo9000: "--mtu=9000" else: "",
+    if this.useRandomMac:    "--mac=" & randomMacAddress().quoteShell else: "",
+    if this.newIpcNamespace: "--ipc-namespace" else: "",
+    if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
+
     if timeout != 0:      "--timeout=" & quoteShell($timeout & ":00:00") else: "",
     if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
     if gateway != "":     "--defaultgw=" & gateway.quoteShell else: "",
@@ -129,14 +136,8 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if maxCpu != 0:       "--rlimit-cpu=" & $maxCpu else: "",
     if maxFileSize != 0:  "--rlimit-fsize=" & $maxFileSize else: "",
     if maxOpenFiles != 0: "--rlimit-nofile=" & $maxOpenFiles else: "",
-
     if maxSubProcesses != 0:    "--rlimit-nproc=" & $maxSubProcesses else: "",
     if maxPendingSignals != 0:  "--rlimit-sigpending=" & $maxPendingSignals else: "",
-    if this.forceEnUsUtf8:      enUsUtf8 else: "",
-    if this.useMtuJumbo9000:    "--mtu=9000" else: "",
-    if this.useRandomMac:       "--mac=" & randomMacAddress().quoteShell else: "",
-    if this.newIpcNamespace:    "--ipc-namespace" else: "",
-    if this.noRamWriteExec:     "--memory-deny-write-execute" else: "",
     if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",").quoteShell else: "",
 
     denese, blancas, negras, command
