@@ -138,7 +138,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.noRamWriteExec:     "--memory-deny-write-execute" else: "",
     if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",").quoteShell else: "",
 
-    denese, blancas, negras, command.quoteShell
+    denese, blancas, negras, command
   ].join(" ")
   when not defined(release): echo cmd
   result = cmd
