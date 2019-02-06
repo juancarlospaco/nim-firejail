@@ -24,7 +24,7 @@ let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
 type
   Firejail* = object  ## Firejail Security Sandbox.
-    noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*,: bool
+    noAllusers*, apparmor*, caps*, noKeepDevShm*, noMachineId*, noMnt*: bool
     noRamWriteExec*, no3d*, noDbus*, noDvd*, noGroups*, noNewPrivs*: bool
     noRoot*, noSound*, noAutoPulse*, noVideo*, forceEnUsUtf8*, noU2f*: bool
     privateTmp*, private*, privateCache*, privateDev*, noTv*, writables*: bool
@@ -124,6 +124,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
     if this.useRandomMac:    "--mac=" & randomMacAddress().quoteShell else: "",
     if this.newIpcNamespace: "--ipc-namespace" else: "",
     if this.noRamWriteExec:  "--memory-deny-write-execute" else: "",
+    if this.noMnt:           "--disable-mnt" else: "",
 
     if timeout != 0:      "--timeout=" & quoteShell($timeout & ":00:00") else: "",
     if name != "":        "--name=" & nam & " --hostname=" & nam else: "",
