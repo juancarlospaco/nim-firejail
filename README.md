@@ -70,7 +70,7 @@ echo myjail.exec("myApp --some-arg") # Run your App isolated inside the Firejail
 
 # Real world usage
 
-- [NimWC has Firejail integrated on the core](https://github.com/ThomasTJdev/nim_websitecreator/pull/39#issuecomment-460046885), making it the worlds first Self-Firejailing Web Framework, it Firejails itself.
+- [NimWC has Firejail integrated on the core](https://github.com/ThomasTJdev/nim_websitecreator/pull/39#issuecomment-460046885), making it the worlds first Self-Firejailing Web Framework, it Firejails itself. [Live Demo.](https://nimwc.org/login)
 
 
 # FAQ
