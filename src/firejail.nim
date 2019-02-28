@@ -55,7 +55,7 @@ proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
   when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
 
-proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
+proc makeCommand*(this: Firejail, command: string, timeout: range[0..99] = 0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
@@ -146,7 +146,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: byte =0, name="",
   when not defined(release): echo cmd
   result = cmd
 
-proc exec*(this: Firejail, command: string, timeout: byte =0, name="",
+proc exec*(this: Firejail, command: string, timeout: range[0..99] =0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
@@ -177,7 +177,7 @@ when isMainModule:
     useMtuJumbo9000: true, useNice20: true, noX: true, useRandomMac: true,
   )
   echo myjail.exec(      # ALL options used here, dont worry they are optional!
-    command="echo 42", timeout=255.byte, name="myAppName", gateway="10.0.0.1",
+    command="echo 42", timeout=99, name="myAppName", gateway="10.0.0.1",
     hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
     tmpfs="/tmp/tmpfs", dnsServers=["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.1.1.2"],
     whitelist= @["/tmp/one", "/tmp/two"], blacklist= @["/usr/bin", "/share/bin"],
