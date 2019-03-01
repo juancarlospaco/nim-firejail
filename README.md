@@ -87,6 +87,8 @@ Yes.
 
 https://snyk.io/blog/top-ten-most-popular-docker-images-each-contain-at-least-30-vulnerabilities
 
+[Hacking Docker with CURL.](http://carnal0wnage.attackresearch.com/2019/02/abusing-docker-api-socket.html)
+
 Docker current issues is a lack of strong security,
 1 security breach in 1 container can be exploited to access all containers on the server,
 since containers share resources with each others.
