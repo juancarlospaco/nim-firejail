@@ -11,14 +11,16 @@ const
   Whitelist Sub-Folders of those paths but not the root path itself directly."""
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
   firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
-  fea = "{" & v.normalize.split("compile time support:")[1].multiReplace(
-    ("disabled", "false,"), ("enabled", "true,"),
-    (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
   enUsUtf8 = "--env=LC_" & [
    "CTYPE='$1'", "NUMERIC='$1'", "TIME='$1'", "COLLATE='$1'", "MONETARY='$1'",
    "MESSAGES='$1'", "PAPER='$1'", "NAME='$1'", "ADDRESS='$1'", "TELEPHONE='$1'",
    "MEASUREMENT='$1'", "IDENTIFICATION='$1'", "ALL='$1'",
   ].join(" --env=LC_").format("en_US.UTF-8") & " --env=LANG='en_US.UTF-8'"
+
+let fea = try: "{" & v.normalize.split("compile time support:")[1].multiReplace(
+    ("disabled", "false,"), ("enabled", "true,"),
+    (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
+    except: "{\"errorLoadingFeatures\": false}"
 
 let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
