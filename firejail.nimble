@@ -9,7 +9,7 @@ srcDir        = "src"
 
 # Dependencies
 
-requires "nim >= 0.19.4"
+requires "nim >= 0.19.6"
 
 import distros
 foreignDep "firejail"
