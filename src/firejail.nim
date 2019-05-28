@@ -165,6 +165,9 @@ proc exec*(this: Firejail, command: string, timeout: range[0..99] =0, name="",
     maxFileSize, maxPendingSignals, maxRam, maxCpu, cpuCoresByNumber))
 
 
+###############################################################################
+
+
 runnableExamples:
   import json ## Minimum possible basic Example.
   echo $Firejail().list()
