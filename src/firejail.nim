@@ -1,8 +1,8 @@
 ## .. image:: https://source.unsplash.com/-YGdiRcY9Sc/800x402
 import json
-from ospaths import quoteShell
+from os import quoteShell
 from osproc import execCmdEx
-from random import randomize, rand
+from random import randomize, sample
 from strutils import strip, split, splitLines, normalize, replace, join, multiReplace
 
 
@@ -40,8 +40,8 @@ type
 proc randomMacAddress(): string =
   ## Return 1 Random MAC Addres string.
   randomize()
-  [h.rand & h.rand, h.rand & h.rand, h.rand & h.rand,
-   h.rand & h.rand, h.rand & h.rand, h.rand & h.rand].join(":")
+  [h.sample & h.sample, h.sample & h.sample, h.sample & h.sample,
+   h.sample & h.sample, h.sample & h.sample, h.sample & h.sample].join(":")
 
 proc list*(this: Firejail): seq[JsonNode] =
   ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
