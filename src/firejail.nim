@@ -13,18 +13,7 @@ const
   errBadPath = """Invalid Path for Whitelist: Firejail wont accept this path.
   Whitelist Sub-Folders of those paths but not the root path itself directly."""
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
-  firejailVersion* = v.splitLines[0].replace("firejail version ", "").strip
   enUsUtf8 = "--env=LC_CTYPE='en_US.UTF-8' --env=LC_NUMERIC='en_US.UTF-8' --env=LC_TIME='en_US.UTF-8' --env=LC_COLLATE='en_US.UTF-8' --env=LC_MONETARY='en_US.UTF-8' --env=LC_MESSAGES='en_US.UTF-8' --env=LC_PAPER='en_US.UTF-8' --env=LC_NAME='en_US.UTF-8' --env=LC_ADDRESS='en_US.UTF-8' --env=LC_TELEPHONE='en_US.UTF-8' --env=LC_MEASUREMENT='en_US.UTF-8' --env=LC_IDENTIFICATION='en_US.UTF-8' --env=LC_ALL='en_US.UTF-8' --env=LANG='en_US.UTF-8'"
-
-let fea = try: "{" & v.normalize.split("compile time support:")[1].multiReplace(
-    ("disabled", "false,"), ("enabled", "true,"),
-    (" support is ", "\": " ), ("- ", " \"" ), ("-", "_" )) & "}"
-    except: """{"apparmor":false,"appimage":false,"chroot":false,
-    "file and directory whitelisting":false,"file transfer":false,
-    "networking":false,"overlayfs":false,"private_home":false,
-    "seccomp_bpf":false,"user namespace":false,"x11 sandboxing":false}"""
-
-let firejailFeatures* = parseJson(fea)  ## Features available on the Firejails.
 
 
 type
@@ -172,8 +161,7 @@ runnableExamples:
   import json ## Minimum possible basic Example.
   echo $Firejail().list()
   echo Firejail().tree()
-  echo firejailFeatures
-  echo firejailVersion
+  echo v
 
 
 when isMainModule:
