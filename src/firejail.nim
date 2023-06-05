@@ -10,8 +10,8 @@ const
   h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
   invalidWhitelist = ["~", "/dev", "/usr", "/etc", "/opt", "/var",
                       "/bin", "/proc", "/media", "/mnt", "/srv", "/sys"]
-  errBadPath = """Invalid Path for Whitelist: Firejail wont accept this path.
-  Whitelist Sub-Folders of those paths but not the root path itself directly."""
+  errBadPath = """Invalid path for whitelist: Firejail won't accept this path.
+  Whitelist sub-folders of those paths but not the root path itself directly."""
   v = staticExec("firejail  --version").strip # Get version info from Firejails.
   enUsUtf8 = "--env=LC_CTYPE='en_US.UTF-8' --env=LC_NUMERIC='en_US.UTF-8' --env=LC_TIME='en_US.UTF-8' --env=LC_COLLATE='en_US.UTF-8' --env=LC_MONETARY='en_US.UTF-8' --env=LC_MESSAGES='en_US.UTF-8' --env=LC_PAPER='en_US.UTF-8' --env=LC_NAME='en_US.UTF-8' --env=LC_ADDRESS='en_US.UTF-8' --env=LC_TELEPHONE='en_US.UTF-8' --env=LC_MEASUREMENT='en_US.UTF-8' --env=LC_IDENTIFICATION='en_US.UTF-8' --env=LC_ALL='en_US.UTF-8' --env=LANG='en_US.UTF-8'"
 
@@ -27,13 +27,13 @@ type
 
 
 proc randomMacAddress(): string =
-  ## Return 1 Random MAC Addres string.
+  ## Return 1 Random MAC Address string.
   randomize()
   [h.sample & h.sample, h.sample & h.sample, h.sample & h.sample,
    h.sample & h.sample, h.sample & h.sample, h.sample & h.sample].join(":")
 
 proc list*(this: Firejail): seq[JsonNode] =
-  ## Return the list of Firejails sandboxes running, returns 1 seq of JSON.
+  ## Returns the list of Firejail sandboxes running, returns 1 seq of JSON.
   let (output, exitCode) = execCmdEx("firejail --list")
   if exitCode == 0 and output.strip.len > 1:
     for line in output.strip.splitLines:
@@ -41,7 +41,7 @@ proc list*(this: Firejail): seq[JsonNode] =
       result.add %*{"pid": l[0], "user": l[1], "name": l[2], "command": l[3]}
 
 proc tree*(this: Firejail): string {.inline.} =
-  ## Return the list of Firejails sandboxes running (Human friendly string).
+  ## Return the list of Firejail sandboxes running (Human readable string).
   let (output, exitCode) = execCmdEx("firejail --tree")
   if exitCode == 0: result = output.strip
 
@@ -56,29 +56,29 @@ proc makeCommand*(this: Firejail, command: string, timeout: range[0..99] = 0, na
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
            maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
            maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): string =
-  ## Return a command of a Firejails sandbox, using the provided config.
+  ## Return a command of a Firejail sandbox, using the provided config.
   let
     nam = name.quoteShell
     lgs = logFile.quoteShell
 
-  var blancas: string
+  var whitelistStr: string
   if whitelist != @[]:
     for folder in whitelist:
       if folder.strip.len > 1:
         assert folder notin invalidWhitelist, errBadPath
-        blancas.add " --whitelist=" & folder.quoteShell
+        whitelistStr.add " --whitelist=" & folder.quoteShell
 
-  var negras: string
+  var blacklistStr: string
   if blacklist != @[]:
     for folder in blacklist:
       if folder.strip.len > 1:
-        negras.add " --blacklist=" & folder.quoteShell
+        blacklistStr.add " --blacklist=" & folder.quoteShell
 
-  var denese: string
+  var dnsStr: string
   if dnsServers != ["", "", "", ""]:
-    for servo in dnsServers:
-      if servo.strip.len > 6: # 1.2.3.4
-        denese.add " --dns=" & servo.quoteShell
+    for server in dnsServers:
+      if server.strip.len > 6: # 1.2.3.4
+        dnsStr.add " --dns=" & server.quoteShell
 
   let cmd = [
     "firejail --noprofile",
@@ -136,7 +136,7 @@ proc makeCommand*(this: Firejail, command: string, timeout: range[0..99] = 0, na
     if maxPendingSignals != 0:  "--rlimit-sigpending=" & $maxPendingSignals else: "",
     if cpuCoresByNumber != @[]: "--cpu=" & cpuCoresByNumber.join(",").quoteShell else: "",
 
-    denese, blancas, negras, command
+    dnsStr, whitelistStr, blacklistStr, command
   ].join(" ")
   when not defined(release): echo cmd
   result = cmd
@@ -146,7 +146,7 @@ proc exec*(this: Firejail, command: string, timeout: range[0..99] =0, name="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
            maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
-           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): auto =
+           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): tuple[output: string, exitCode: int] =
   ## Return  a process on a Firejails sandbox, using the provided config.
   result = execCmdEx(makeCommand(
     this, command, timeout, name, gateway, hostsFile, logFile, chroot, tmpfs,
@@ -158,14 +158,14 @@ proc exec*(this: Firejail, command: string, timeout: range[0..99] =0, name="",
 
 
 runnableExamples:
-  import json ## Minimum possible basic Example.
+  import json ## Minimum possible basic example.
   echo $Firejail().list()
   echo Firejail().tree()
   echo v
 
 
 when isMainModule:
-  let myjail = Firejail( # ALL options used here, dont worry they are optional!
+  let myjail = Firejail( # ALL options used here, don't worry they are optional!
     noAllusers: false, apparmor: false, caps: true, noKeepDevShm: false,
     noMachineId: false, noRamWriteExec: true, no3d: true, noDbus: true,
     noDvd: true, noGroups: true, noNewPrivs: true, noRoot: true, noSound: true,
@@ -175,7 +175,7 @@ when isMainModule:
     noDebuggers: false, newIpcNamespace: true, appimage: true,
     useMtuJumbo9000: true, useNice20: true, noX: true, useRandomMac: true,
   )
-  echo myjail.exec(      # ALL options used here, dont worry they are optional!
+  echo myjail.exec(      # ALL options used here, don't worry they are optional!
     command="echo 42", timeout=99, name="myAppName", gateway="10.0.0.1",
     hostsFile="/etc/hosts", logfile="/tmp/myApp.log", chroot="/tmp/chroot/",
     tmpfs="/tmp/tmpfs", dnsServers=["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.1.1.2"],
