@@ -146,7 +146,7 @@ proc exec*(this: Firejail, command: string, timeout: range[0..99] =0, name="",
            whitelist: seq[string] = @[], blacklist: seq[string] = @[],
            dnsServers: array[4, string] = ["", "", "", ""], maxSubProcesses = 0,
            maxOpenFiles = 0, maxFileSize = 0, maxPendingSignals = 0,
-           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): int =
+           maxRam = 0, maxCpu = 0, cpuCoresByNumber: seq[int] = @[]): tuple[output: string, exitCode: int] =
   ## Return  a process on a Firejails sandbox, using the provided config.
   result = execCmdEx(makeCommand(
     this, command, timeout, name, gateway, hostsFile, logFile, chroot, tmpfs,
