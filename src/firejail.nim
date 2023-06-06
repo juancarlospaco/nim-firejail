@@ -1,5 +1,4 @@
 ## .. image:: https://source.unsplash.com/-YGdiRcY9Sc/800x402
-import json
 from os import quoteShell
 from osproc import execCmdEx
 from random import randomize, sample
@@ -7,7 +6,6 @@ from strutils import strip, split, splitLines, normalize, replace, join, multiRe
 
 
 const
-  h = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
   invalidWhitelist = ["~", "/dev", "/usr", "/etc", "/opt", "/var",
                       "/bin", "/proc", "/media", "/mnt", "/srv", "/sys"]
   errBadPath = """Invalid path for whitelist: Firejail won't accept this path.
@@ -26,29 +24,48 @@ type
     newIpcNamespace*,  useMtuJumbo9000*, useNice20*, useRandomMac*: bool
 
 
-proc randomMacAddress(): string =
+proc randomMacAddress*(): string =
   ## Return 1 Random MAC Address string.
-  randomize()
-  [h.sample & h.sample, h.sample & h.sample, h.sample & h.sample,
-   h.sample & h.sample, h.sample & h.sample, h.sample & h.sample].join(":")
+  const c    = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+  result     = newString(17)
+  result[0]  = c.sample
+  result[1]  = c.sample
+  result[2]  = ':'
+  result[3]  = c.sample
+  result[4]  = c.sample
+  result[5]  = ':'
+  result[6]  = c.sample
+  result[7]  = c.sample
+  result[8]  = ':'
+  result[9]  = c.sample
+  result[10] = c.sample
+  result[11] = ':'
+  result[12] = c.sample
+  result[13] = c.sample
+  result[14] = ':'
+  result[15] = c.sample
+  result[16] = c.sample
 
-proc list*(this: Firejail): seq[JsonNode] =
+
+proc list*(this: Firejail): seq[tuple[pid, user, name, command: string]] =
   ## Returns the list of Firejail sandboxes running, returns 1 seq of JSON.
   let (output, exitCode) = execCmdEx("firejail --list")
   if exitCode == 0 and output.strip.len > 1:
     for line in output.strip.splitLines:
-      var l = line.split(":")
-      result.add %*{"pid": l[0], "user": l[1], "name": l[2], "command": l[3]}
+      let l = line.split(":")
+      result.add (pid: l[0], user: l[1], name: l[2], command: l[3])
 
-proc tree*(this: Firejail): string {.inline.} =
+
+proc tree*(this: Firejail): string =
   ## Return the list of Firejail sandboxes running (Human readable string).
   let (output, exitCode) = execCmdEx("firejail --tree")
-  if exitCode == 0: result = output.strip
+  if exitCode == 0: result = output
 
-proc shutdown*(this: Firejail, pid: int): bool {.inline.} =
+
+proc shutdown*(this: Firejail; pid: Positive): bool =
   ## Shutdown a running Firejail sandbox by PID.
-  when not defined(release): echo "Stoping 1 Firejail sandbox of PID: " & $pid
   execCmdEx("firejail --shutdown=" & $pid).exitCode == 0
+
 
 proc makeCommand*(this: Firejail, command: string, timeout: range[0..99] = 0, name="",
            gateway="", hostsFile="", logFile="", chroot="", tmpfs="",
